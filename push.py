@@ -1,16 +1,18 @@
 #!/usr/bin/env python3
 """
-push.py — Git helper for PrivacyShield.
+push.py — PrivacyShield GitHub push helper.
 
-Modes:
-    python3 push.py                         # stage + commit + push
-    python3 push.py "my message"            # stage + commit with message + push
-    python3 push.py --push-only             # push already-committed changes only
-    python3 push.py --push-only "ignored"   # same as above
+Usage
+-----
+  python3 push.py                     # auto-commit any pending changes, then push
+  python3 push.py "commit message"    # same, with a custom commit message
+  python3 push.py --push-only         # push already-committed changes, no commit step
 
-Reads GITHUB_PERSONAL_ACCESS_TOKEN from the environment to authenticate
-HTTPS pushes. The token is injected into the remote URL at push time and
-is never printed or logged.
+Authentication
+--------------
+  Reads GITHUB_PERSONAL_ACCESS_TOKEN from the environment.
+  The token is injected into the remote HTTPS URL at push time only
+  and is never written to disk or printed to stdout.
 """
 
 import os
@@ -20,129 +22,105 @@ from datetime import datetime
 from urllib.parse import urlparse, urlunparse
 
 
-def run(cmd: list[str], check: bool = True, capture: bool = False) -> subprocess.CompletedProcess:
-    """Run a shell command, streaming output unless capture=True."""
+# ── helpers ────────────────────────────────────────────────────────────────
+
+def git(*args, capture: bool = False, check: bool = True) -> subprocess.CompletedProcess:
     return subprocess.run(
-        cmd,
-        check=check,
+        ["git", *args],
         capture_output=capture,
         text=True,
+        check=check,
     )
 
 
-def get_current_branch() -> str:
-    result = run(["git", "rev-parse", "--abbrev-ref", "HEAD"], capture=True)
-    return result.stdout.strip()
+def current_branch() -> str:
+    return git("rev-parse", "--abbrev-ref", "HEAD", capture=True).stdout.strip()
 
 
-def get_remote_url(remote: str = "origin") -> str:
-    result = run(["git", "remote", "get-url", remote], capture=True)
-    return result.stdout.strip()
+def remote_url(remote: str = "origin") -> str:
+    return git("remote", "get-url", remote, capture=True).stdout.strip()
 
 
-def inject_token_into_url(url: str, token: str) -> str:
-    """Return an HTTPS URL with the token embedded as the username."""
-    parsed = urlparse(url)
-    if parsed.scheme not in ("http", "https"):
+def authed_url(url: str, token: str) -> str:
+    """Embed the PAT as the username in an HTTPS remote URL."""
+    p = urlparse(url)
+    if p.scheme not in ("http", "https"):
         raise ValueError(
-            f"Remote URL uses scheme '{parsed.scheme}'. "
-            "Convert the remote to HTTPS or use an SSH key instead of a token."
+            f"Remote uses '{p.scheme}' — only HTTPS is supported for token auth. "
+            "Switch the remote to an HTTPS URL."
         )
-    host = parsed.hostname or ""
-    port_part = f":{parsed.port}" if parsed.port else ""
-    authed_netloc = f"{token}@{host}{port_part}"
-    authed = parsed._replace(netloc=authed_netloc)
-    return urlunparse(authed)
+    netloc = f"{token}@{p.hostname}"
+    if p.port:
+        netloc += f":{p.port}"
+    return urlunparse(p._replace(netloc=netloc))
 
 
-def has_uncommitted_changes() -> bool:
-    result = run(["git", "status", "--porcelain"], capture=True)
-    return bool(result.stdout.strip())
+def has_local_changes() -> bool:
+    return bool(git("status", "--porcelain", capture=True).stdout.strip())
 
 
-def count_unpushed_commits(branch: str) -> int:
-    """Return the number of local commits not yet on origin/branch."""
-    result = run(
-        ["git", "rev-list", f"origin/{branch}..HEAD", "--count"],
-        capture=True,
-        check=False,
-    )
+def unpushed_count(branch: str) -> int:
+    r = git("rev-list", f"origin/{branch}..HEAD", "--count", capture=True, check=False)
     try:
-        return int(result.stdout.strip())
+        return int(r.stdout.strip())
     except ValueError:
         return 0
 
 
-def do_push(branch: str) -> None:
-    token = os.environ.get("GITHUB_PERSONAL_ACCESS_TOKEN", "").strip()
-    if token:
-        try:
-            remote_url = get_remote_url("origin")
-            authed_url = inject_token_into_url(remote_url, token)
-            run(["git", "push", authed_url, f"HEAD:{branch}"])
-        except ValueError as err:
-            print(f"\nError: {err}")
-            sys.exit(1)
-    else:
-        print(
-            "Warning: GITHUB_PERSONAL_ACCESS_TOKEN is not set. "
-            "Attempting push with existing credentials…"
-        )
-        result = run(["git", "push", "origin", branch], check=False)
-        if result.returncode != 0:
-            print(
-                "\nPush failed. Set GITHUB_PERSONAL_ACCESS_TOKEN and retry:\n"
-                "  export GITHUB_PERSONAL_ACCESS_TOKEN=your_token\n"
-                "  python3 push.py --push-only"
-            )
-            sys.exit(result.returncode)
-
+# ── main ───────────────────────────────────────────────────────────────────
 
 def main() -> None:
-    args = sys.argv[1:]
-    push_only = "--push-only" in args
-    msg_parts = [a for a in args if a != "--push-only"]
-    commit_message: str = " ".join(msg_parts).strip()
+    argv = sys.argv[1:]
+    push_only = "--push-only" in argv
+    msg_args  = [a for a in argv if a != "--push-only"]
+    msg       = " ".join(msg_args).strip()
 
-    print("── PrivacyShield push helper ──")
-    run(["git", "status"])
+    token = os.environ.get("GITHUB_PERSONAL_ACCESS_TOKEN", "").strip()
+    if not token:
+        print("ERROR: GITHUB_PERSONAL_ACCESS_TOKEN is not set in the environment.")
+        print("  export GITHUB_PERSONAL_ACCESS_TOKEN=ghp_yourtoken")
+        sys.exit(1)
 
-    branch = get_current_branch()
+    branch = current_branch()
+    url    = remote_url()
+    push_url = authed_url(url, token)
 
-    if push_only:
-        unpushed = count_unpushed_commits(branch)
-        if unpushed == 0 and not has_uncommitted_changes():
-            print(f"\nAlready up to date with origin/{branch}. Nothing to push.")
-            sys.exit(0)
-        print(f"\nPush-only mode: pushing {unpushed} commit(s) to origin/{branch}…")
-        do_push(branch)
-    else:
-        if not has_uncommitted_changes():
-            # Nothing new to commit — check if there are unpushed commits to push
-            unpushed = count_unpushed_commits(branch)
-            if unpushed > 0:
-                print(f"\nWorking tree clean but {unpushed} unpushed commit(s) found.")
-                print(f"Pushing to origin/{branch}…")
-                do_push(branch)
-            else:
-                print("\nNothing to commit and nothing to push. Already up to date.")
-            sys.exit(0)
+    print(f"── PrivacyShield push → origin/{branch} ──")
+    git("status")
 
-        # Stage all changes
-        print("\nStaging all changes…")
-        run(["git", "add", "."])
+    # ── commit step (skipped with --push-only) ───────────────────────────
+    if not push_only:
+        if has_local_changes():
+            print("\nStaging all changes…")
+            git("add", ".")
+            if not msg:
+                msg = f"chore: update [{datetime.now().strftime('%Y-%m-%d %H:%M')}]"
+            print(f'Committing: "{msg}"')
+            git("commit", "-m", msg)
+        else:
+            ahead = unpushed_count(branch)
+            if ahead == 0:
+                print("\nNothing to commit and nothing to push — already up to date.")
+                sys.exit(0)
+            print(f"\nWorking tree clean; {ahead} unpushed commit(s) found.")
 
-        if not commit_message:
-            timestamp = datetime.now().strftime("%Y-%m-%d %H:%M")
-            commit_message = f"chore: update [{timestamp}]"
+    # ── push ─────────────────────────────────────────────────────────────
+    ahead = unpushed_count(branch)
+    if push_only and ahead == 0 and not has_local_changes():
+        print(f"\nAlready up to date with origin/{branch}.")
+        sys.exit(0)
 
-        print(f"\nCommitting: \"{commit_message}\"")
-        run(["git", "commit", "-m", commit_message])
+    print(f"\nPushing to origin/{branch}…")
+    result = subprocess.run(
+        ["git", "push", push_url, f"HEAD:{branch}"],
+        text=True,
+        check=False,
+    )
+    if result.returncode != 0:
+        print("\nPush failed. Check your token permissions and try again.")
+        sys.exit(result.returncode)
 
-        print(f"\nPushing to origin/{branch}…")
-        do_push(branch)
-
-    print(f"\nDone. Changes are on origin/{branch}.")
+    print(f"\n✓ Pushed successfully to origin/{branch}.")
 
 
 if __name__ == "__main__":
