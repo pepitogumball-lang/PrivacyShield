@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">PrivacyShield</string>
+
+    <!-- Navigation -->
+    <string name="nav_home">Home</string>
+    <string name="nav_apps">Apps</string>
+    <string name="nav_protected">Protected</string>
+    <string name="nav_settings">Settings</string>
+
+    <!-- Home screen -->
+    <string name="home_title">Privacy Dashboard</string>
+    <string name="home_subtitle">Device security overview</string>
+    <string name="home_total_apps">Total Apps Scanned</string>
+    <string name="home_risky_apps">Dangerous Permissions</string>
+    <string name="home_accessibility_apps">Accessibility Services</string>
+    <string name="home_overlay_apps">Overlay Permission</string>
+    <string name="home_recording_risk">Screen-Recording Risk</string>
+    <string name="home_protected_apps">Protected Apps</string>
+    <string name="home_last_scan">Last scan</string>
+    <string name="home_scan_now">Scan Now</string>
+    <string name="home_scanning">Scanning…</string>
+
+    <!-- Apps screen -->
+    <string name="apps_title">Installed Apps</string>
+    <string name="apps_search_hint">Search by name or package…</string>
+    <string name="apps_filter_all">All</string>
+    <string name="apps_filter_high_risk">High Risk</string>
+    <string name="apps_filter_accessibility">Accessibility</string>
+    <string name="apps_filter_overlay">Overlay</string>
+    <string name="apps_filter_camera_mic">Camera / Mic</string>
+    <string name="apps_filter_recording">Recording Risk</string>
+    <string name="apps_empty">No apps match your filter.</string>
+
+    <!-- Protected apps screen -->
+    <string name="protected_title">Protected Apps</string>
+    <string name="protected_subtitle">Apps marked as sensitive receive extra attention.</string>
+    <string name="protected_empty">No protected apps yet. Add apps from the Apps screen.</string>
+    <string name="protected_add">Add from installed apps</string>
+    <string name="protected_remove">Remove protection</string>
+
+    <!-- Settings screen -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_scan_section">Scan Options</string>
+    <string name="settings_scan_accessibility">Detect accessibility services</string>
+    <string name="settings_scan_overlay">Detect overlay permission</string>
+    <string name="settings_scan_recording">Detect recording risk indicators</string>
+    <string name="settings_scan_dangerous">Detect dangerous permissions</string>
+    <string name="settings_notifications_section">Alerts</string>
+    <string name="settings_notify_high_risk">Notify on high-risk apps</string>
+    <string name="settings_about_section">About</string>
+    <string name="settings_version">Version</string>
+    <string name="settings_privacy_note">PrivacyShield works fully offline. No data leaves your device.</string>
+
+    <!-- Risk levels -->
+    <string name="risk_low">Low</string>
+    <string name="risk_medium">Medium</string>
+    <string name="risk_high">High</string>
+    <string name="risk_critical">Critical</string>
+
+    <!-- Explanations -->
+    <string name="explain_accessibility">This app registered an accessibility service, which can read screen content and simulate input on your behalf.</string>
+    <string name="explain_overlay">This app can draw over other apps, potentially obscuring what you see or tap.</string>
+    <string name="explain_recording">This app requests permissions associated with screen or audio capture.</string>
+    <string name="explain_dangerous">This app requests one or more dangerous permissions (camera, mic, location, contacts, etc.).</string>
+    <string name="explain_protected">Protected apps are flagged as sensitive. PrivacyShield highlights other apps that may interact with them.</string>
+
+    <!-- Misc -->
+    <string name="never">Never</string>
+    <string name="unknown">Unknown</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="done">Done</string>
+</resources>

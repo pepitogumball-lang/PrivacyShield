@@ -1,0 +1,43 @@
+### Android ###
+*.iml
+.gradle/
+local.properties
+.idea/
+.DS_Store
+build/
+captures/
+.externalNativeBuild/
+.cxx/
+*.apk
+*.aar
+*.ap_
+*.dex
+
+### Gradle ###
+gradle-wrapper.jar
+.gradle
+**/build/
+!src/**/build/
+
+### Key files (never commit) ###
+*.jks
+*.keystore
+release.properties
+
+### macOS ###
+.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+
+### IntelliJ / Android Studio ###
+*.iws
+out/
+.idea/
+*.class
+
+### Python ###
+__pycache__/
+*.py[cod]
+*.pyo
+.env

@@ -1,0 +1,61 @@
+name: Android Build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    name: Build Debug APK
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: gradle
+
+      - name: Bootstrap Gradle wrapper jar
+        # The gradle-wrapper.jar is a binary; we generate it from the system Gradle
+        # so we do not need to commit a binary file to the repository.
+        run: |
+          GRADLE_VERSION="8.4"
+          GRADLE_ZIP="/tmp/gradle-${GRADLE_VERSION}-bin.zip"
+          GRADLE_DIR="/tmp/gradle-${GRADLE_VERSION}"
+
+          echo "Downloading Gradle ${GRADLE_VERSION}…"
+          curl -fsSL "https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip" \
+            -o "${GRADLE_ZIP}"
+
+          echo "Extracting…"
+          unzip -q "${GRADLE_ZIP}" -d /tmp
+
+          echo "Generating wrapper jar…"
+          "${GRADLE_DIR}/bin/gradle" wrapper \
+            --gradle-version "${GRADLE_VERSION}" \
+            --distribution-type bin \
+            --project-dir .
+
+          echo "Wrapper jar generated:"
+          ls -lh gradle/wrapper/gradle-wrapper.jar
+
+      - name: Grant execute permission to gradlew
+        run: chmod +x ./gradlew
+
+      - name: Build debug APK
+        run: ./gradlew assembleDebug --no-daemon --stacktrace
+
+      - name: Upload debug APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: PrivacyShield-debug
+          path: app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+          retention-days: 14
