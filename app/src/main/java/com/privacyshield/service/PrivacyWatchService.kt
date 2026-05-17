@@ -6,8 +6,10 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
+import android.graphics.drawable.Icon
 import android.os.IBinder
 import com.privacyshield.MainActivity
+import com.privacyshield.R
 
 /**
  * PrivacyWatchService — a foreground service skeleton for ongoing privacy monitoring.
@@ -80,16 +82,15 @@ class PrivacyWatchService : Service() {
             this, 0, openIntent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
+        val notifIcon = Icon.createWithResource(this, R.drawable.ic_notification)
 
         return Notification.Builder(this, CHANNEL_ID)
             .setContentTitle("PrivacyShield is active")
             .setContentText("Monitoring for privacy risks…")
-            .setSmallIcon(android.R.drawable.ic_lock_lock)
+            .setSmallIcon(notifIcon)
             .setContentIntent(openPending)
             .addAction(
-                Notification.Action.Builder(
-                    null, "Stop", stopPending
-                ).build()
+                Notification.Action.Builder(notifIcon, "Stop", stopPending).build()
             )
             .setOngoing(true)
             .build()
