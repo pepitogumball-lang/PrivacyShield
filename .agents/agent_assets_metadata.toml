@@ -1,0 +1,50 @@
+uploads = []
+outputs = []
+
+[[generated]]
+id = "kwzBUo8lBd1Q12YFEEu-4"
+uri = "file://app/src/main/res/mipmap-xxxhdpi/ic_launcher_foreground.png"
+type = "image"
+title = "launcher icon foreground"
+
+[[generated]]
+id = "mTfdO2eObXNev0H2GEw9d"
+uri = "file://app/src/main/res/drawable-nodpi/splash_logo.png"
+type = "image"
+title = "splash brand logo"
+
+[[generated]]
+id = "fegw-3323gRyg0O1ByKJj"
+uri = "file://app/src/main/res/drawable-nodpi/empty_no_apps.png"
+type = "image"
+title = "empty no apps"
+
+[[generated]]
+id = "zJhl1ouuyxgtU8Ia2kHuE"
+uri = "file://app/src/main/res/drawable-nodpi/empty_no_protected.png"
+type = "image"
+title = "empty no protected apps"
+
+[[generated]]
+id = "J-7cCwxsH3iTV-WgIwtj_"
+uri = "file://app/src/main/res/drawable-nodpi/empty_scan_complete.png"
+type = "image"
+title = "empty scan complete"
+
+[[generated]]
+id = "-cQ-tLJff2Fyca-u7ovPF"
+uri = "file://app/src/main/res/drawable-nodpi/empty_high_risk.png"
+type = "image"
+title = "empty high risk warning"
+
+[[generated]]
+id = "TDfIi_w7MgihLbCPKKZVI"
+uri = "file://app/src/main/res/drawable-nodpi/empty_accessibility.png"
+type = "image"
+title = "empty accessibility"
+
+[[generated]]
+id = "gKQFAzQYjSnVY-fUSttL5"
+uri = "file://app/src/main/res/drawable-nodpi/empty_recording_risk.png"
+type = "image"
+title = "empty recording risk"

@@ -1,0 +1,52 @@
+CONTINUE THE PROJECT USING THE API KEY / API ACCESS THAT WAS ALREADY PROVIDED TO YOU IN THE WORKSPACE.
+
+CRITICAL WORKFLOW REQUIREMENTS:
+
+1. Inspect the repository state and all files currently created.
+2. Read the latest build outputs / logs / artifacts.
+3. Detect every build error, warning, missing reference, broken import, invalid Gradle setting, bad resource name, or workflow issue.
+4. Analyze the errors carefully.
+5. Fix them directly in the codebase.
+6. Rebuild.
+7. Repeat this cycle until the project is internally consistent and builds cleanly.
+
+GIT / PUSH REQUIREMENTS:
+
+- If possible, push the final changes to the "main" branch of the configured repository.
+- If direct push is not possible from your environment, do not stop.
+- Instead, generate the exact terminal command(s) needed so we can run them manually inside Replit.
+- Make those commands copy-paste ready.
+- Keep the commands minimal, safe, and specific.
+
+REWRITE RULE:
+
+- Rework and rewrite anything necessary in the project if the current APK flow is not suitable.
+- This app is NOT intended for Play Store publication.
+- Therefore, do not optimize for Play Store submission constraints.
+- Prioritize a working APK, local installation, GitHub Actions builds, and practical mobile development from Replit.
+- It is acceptable to simplify Play Store-specific concerns, but do not break Android compatibility.
+
+VALIDATION LOOP:
+After each correction:
+
+- inspect the whole project again
+- verify the build logs
+- verify resource links
+- verify manifest entries
+- verify workflow syntax
+- verify push.py behavior
+- verify the APK output path
+- verify no file references are stale
+- verify the repository remains consistent
+
+DELIVERABLES:
+
+- corrected source files
+- corrected build configuration
+- corrected workflow if needed
+- corrected asset references if needed
+- corrected push script if needed
+- final push to main if available
+- otherwise, exact manual command(s) for terminal execution
+
+Keep going until the repo is fixed and ready.

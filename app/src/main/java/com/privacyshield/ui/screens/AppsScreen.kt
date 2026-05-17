@@ -33,10 +33,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.privacyshield.R
 import com.privacyshield.data.AppViewModel
 import com.privacyshield.data.model.InstalledAppInfo
 import com.privacyshield.data.model.RiskLevel
 import com.privacyshield.ui.components.AppCard
+import com.privacyshield.ui.components.EmptyState
 import com.privacyshield.ui.theme.BackgroundDark
 import com.privacyshield.ui.theme.CyanAccent
 import com.privacyshield.ui.theme.OutlineDark
@@ -150,11 +152,10 @@ fun AppsScreen(
             }
 
             if (filtered.isEmpty()) {
-                Text(
-                    text = "No apps match your filter.",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = TextSecondary,
-                    modifier = Modifier.padding(24.dp)
+                EmptyState(
+                    imageRes = R.drawable.empty_no_apps,
+                    title = "No apps found",
+                    subtitle = "No installed apps match your current filter or search."
                 )
             } else {
                 LazyColumn(

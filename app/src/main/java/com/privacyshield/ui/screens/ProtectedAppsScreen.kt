@@ -32,8 +32,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.privacyshield.R
 import com.privacyshield.data.AppViewModel
 import com.privacyshield.data.model.InstalledAppInfo
+import com.privacyshield.ui.components.EmptyState
 import com.privacyshield.ui.components.RiskBadge
 import com.privacyshield.ui.theme.BackgroundDark
 import com.privacyshield.ui.theme.CyanAccent
@@ -135,11 +137,10 @@ fun ProtectedAppsScreen(viewModel: AppViewModel = viewModel()) {
 
             if (protectedApps.isEmpty() && unprotectedApps.isEmpty()) {
                 item {
-                    Text(
-                        text = "No apps found. Run a scan first.",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = TextSecondary,
-                        modifier = Modifier.padding(24.dp)
+                    EmptyState(
+                        imageRes = R.drawable.empty_no_protected,
+                        title = "No apps found",
+                        subtitle = "Run a scan first to see installed apps here."
                     )
                 }
             }
