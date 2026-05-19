@@ -91,6 +91,39 @@
     <string name="explain_dangerous">This app requests one or more dangerous permissions (camera, mic, location, contacts, etc.).</string>
     <string name="explain_protected">Protected apps are flagged as sensitive. PrivacyShield highlights other apps that may interact with them.</string>
 
+    <!-- Remote screen navigation -->
+    <string name="nav_remote">Remote</string>
+
+    <!-- Remote screen -->
+    <string name="remote_title">TV Remote</string>
+    <string name="remote_scan">Scan Network</string>
+    <string name="remote_add_manual">Add by IP</string>
+    <string name="remote_connect">Connect</string>
+    <string name="remote_disconnect">Disconnect</string>
+    <string name="remote_cancel">Cancel</string>
+    <string name="remote_devices_section">Devices</string>
+    <string name="remote_found_on_network">Found on network</string>
+    <string name="remote_saved_devices">Saved devices</string>
+    <string name="remote_no_devices">No devices found</string>
+    <string name="remote_no_devices_hint">Make sure your Android TV / Google TV is on the same Wi-Fi network.</string>
+    <string name="remote_pairing_title">Pairing required</string>
+    <string name="remote_pairing_hint">Open your Android TV and confirm the pairing request on screen.</string>
+    <string name="remote_controls_locked">Connect to a TV to enable controls</string>
+    <string name="remote_add_device_title">Add Device Manually</string>
+    <string name="remote_add_device_hint">Enter the IP address of your Android TV / Google TV.</string>
+    <string name="remote_ip_label">IP address (e.g.\u00A0192.168.1.100)</string>
+    <string name="remote_port_label">Port (default 6466)</string>
+    <string name="remote_name_label">Display name (optional)</string>
+    <string name="remote_add_button">Add</string>
+    <string name="remote_rename_title">Rename Device</string>
+    <string name="remote_rename_label">Device name</string>
+    <string name="remote_paired_label">Paired</string>
+    <string name="remote_use_this_tv">Use this TV</string>
+    <string name="remote_ir_note">IR — Samsung NEC codes by default. Other brands may use different codes.</string>
+    <string name="remote_hide">Hide</string>
+    <string name="remote_show">Show</string>
+    <string name="remote_discovery_unavailable">Discovery unavailable</string>
+
     <!-- Misc -->
     <string name="never">Never</string>
     <string name="unknown">Unknown</string>
