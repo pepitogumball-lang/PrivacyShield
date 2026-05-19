@@ -23,8 +23,6 @@ jobs:
           cache: gradle
 
       - name: Bootstrap Gradle wrapper jar
-        # The gradle-wrapper.jar is a binary; we generate it from the system Gradle
-        # so we do not need to commit a binary file to the repository.
         run: |
           GRADLE_VERSION="8.4"
           GRADLE_ZIP="/tmp/gradle-${GRADLE_VERSION}-bin.zip"
@@ -52,10 +50,15 @@ jobs:
       - name: Build debug APK
         run: ./gradlew assembleDebug --no-daemon --stacktrace
 
-      - name: Upload debug APK artifact
+      - name: Rename APK
+        run: |
+          mkdir -p app/build/outputs/apk/debug/renamed
+          cp app/build/outputs/apk/debug/app-debug.apk app/build/outputs/apk/debug/renamed/PrivacyShield.apk
+
+      - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: PrivacyShield-debug
-          path: app/build/outputs/apk/debug/app-debug.apk
+          name: PrivacyShield
+          path: app/build/outputs/apk/debug/renamed/PrivacyShield.apk
           if-no-files-found: error
           retention-days: 14
