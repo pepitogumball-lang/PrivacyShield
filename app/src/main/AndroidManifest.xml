@@ -7,15 +7,15 @@
         android:name="android.permission.QUERY_ALL_PACKAGES"
         tools:ignore="QueryAllPackagesPermission" />
 
-    <!-- For foreground service (privacy watch) -->
+    <!-- Foreground service for privacy monitoring -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
 
-    <!-- Post notifications (Android 13+) -->
+    <!-- Post notifications (Android 13+ — requested at runtime) -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
-    <!-- Internet blocked intentionally — app works fully offline -->
-    <!-- Network security config enforces no cleartext traffic -->
+    <!-- Internet — reserved for future sync / CVE-feed features; no cleartext allowed -->
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="false"
