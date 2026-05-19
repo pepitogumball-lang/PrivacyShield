@@ -91,6 +91,39 @@
     <string name="explain_dangerous">Esta app solicita uno o más permisos peligrosos (cámara, micrófono, ubicación, contactos, etc.).</string>
     <string name="explain_protected">Las apps protegidas se marcan como sensibles. PrivacyShield destaca otras apps que podrían interactuar con ellas.</string>
 
+    <!-- Pantalla de mando a distancia - navegación -->
+    <string name="nav_remote">Mando</string>
+
+    <!-- Pantalla de mando a distancia -->
+    <string name="remote_title">Mando TV</string>
+    <string name="remote_scan">Buscar en red</string>
+    <string name="remote_add_manual">Añadir por IP</string>
+    <string name="remote_connect">Conectar</string>
+    <string name="remote_disconnect">Desconectar</string>
+    <string name="remote_cancel">Cancelar</string>
+    <string name="remote_devices_section">Dispositivos</string>
+    <string name="remote_found_on_network">Encontrados en la red</string>
+    <string name="remote_saved_devices">Dispositivos guardados</string>
+    <string name="remote_no_devices">No se encontraron dispositivos</string>
+    <string name="remote_no_devices_hint">Asegúrate de que tu Android TV / Google TV esté en la misma red Wi-Fi.</string>
+    <string name="remote_pairing_title">Se requiere vinculación</string>
+    <string name="remote_pairing_hint">Abre tu Android TV y confirma la solicitud de vinculación en pantalla.</string>
+    <string name="remote_controls_locked">Conéctate a una TV para activar los controles</string>
+    <string name="remote_add_device_title">Añadir dispositivo manualmente</string>
+    <string name="remote_add_device_hint">Introduce la dirección IP de tu Android TV / Google TV.</string>
+    <string name="remote_ip_label">Dirección IP (p.\u00A0ej.\u00A0192.168.1.100)</string>
+    <string name="remote_port_label">Puerto (predeterminado 6466)</string>
+    <string name="remote_name_label">Nombre para mostrar (opcional)</string>
+    <string name="remote_add_button">Añadir</string>
+    <string name="remote_rename_title">Renombrar dispositivo</string>
+    <string name="remote_rename_label">Nombre del dispositivo</string>
+    <string name="remote_paired_label">Vinculado</string>
+    <string name="remote_use_this_tv">Usar esta TV</string>
+    <string name="remote_ir_note">IR — códigos NEC Samsung por defecto. Otras marcas pueden usar códigos distintos.</string>
+    <string name="remote_hide">Ocultar</string>
+    <string name="remote_show">Mostrar</string>
+    <string name="remote_discovery_unavailable">Descubrimiento no disponible</string>
+
     <!-- Varios -->
     <string name="never">Nunca</string>
     <string name="unknown">Desconocido</string>
