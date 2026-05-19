@@ -1,9 +1,12 @@
 package com.privacyshield
 
+import android.Manifest
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Apps
@@ -19,9 +22,12 @@ import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -42,6 +48,7 @@ import com.privacyshield.ui.theme.OutlineDark
 import com.privacyshield.ui.theme.PrivacyShieldTheme
 import com.privacyshield.ui.theme.SurfaceDark
 import com.privacyshield.ui.theme.TextSecondary
+import com.privacyshield.util.PermissionManager
 
 sealed class Screen(val route: String, val label: String, val icon: ImageVector) {
     object Home : Screen("home", "Home", Icons.Default.Home)
@@ -60,9 +67,24 @@ private val bottomNavItems = listOf(
 )
 
 class MainActivity : ComponentActivity() {
+
+    // Registered at Activity level — must be registered before onStart
+    private val notificationPermLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { /* granted is handled silently; app works without notifications */ }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        // Request POST_NOTIFICATIONS on Android 13+ if not already granted
+        if (PermissionManager.needsNotificationPermission() &&
+            !PermissionManager.isNotificationPermissionGranted(this)
+        ) {
+            @Suppress("InlinedApi")
+            notificationPermLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        }
+
         setContent {
             PrivacyShieldTheme {
                 PrivacyShieldApp()
@@ -99,12 +121,8 @@ private fun PrivacyShieldApp() {
                                 restoreState = true
                             }
                         },
-                        icon = {
-                            Icon(screen.icon, contentDescription = screen.label)
-                        },
-                        label = {
-                            Text(screen.label, style = MaterialTheme.typography.labelSmall)
-                        },
+                        icon = { Icon(screen.icon, contentDescription = screen.label) },
+                        label = { Text(screen.label, style = MaterialTheme.typography.labelSmall) },
                         colors = NavigationBarItemDefaults.colors(
                             selectedIconColor = CyanAccent,
                             selectedTextColor = CyanAccent,
@@ -122,21 +140,11 @@ private fun PrivacyShieldApp() {
             startDestination = Screen.Home.route,
             modifier = Modifier.padding(innerPadding)
         ) {
-            composable(Screen.Home.route) {
-                HomeScreen(viewModel = appViewModel)
-            }
-            composable(Screen.Apps.route) {
-                AppsScreen(viewModel = appViewModel)
-            }
-            composable(Screen.Protected.route) {
-                ProtectedAppsScreen(viewModel = appViewModel)
-            }
-            composable(Screen.Performance.route) {
-                PerformanceScreen(viewModel = appViewModel)
-            }
-            composable(Screen.Settings.route) {
-                SettingsScreen(viewModel = appViewModel)
-            }
+            composable(Screen.Home.route) { HomeScreen(viewModel = appViewModel) }
+            composable(Screen.Apps.route) { AppsScreen(viewModel = appViewModel) }
+            composable(Screen.Protected.route) { ProtectedAppsScreen(viewModel = appViewModel) }
+            composable(Screen.Performance.route) { PerformanceScreen(viewModel = appViewModel) }
+            composable(Screen.Settings.route) { SettingsScreen(viewModel = appViewModel) }
         }
     }
 }
