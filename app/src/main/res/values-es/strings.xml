@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">PrivacyShield</string>
+    <string name="app_tagline">Privacidad que puedes ver.</string>
+
+    <!-- Navegación -->
+    <string name="nav_home">Inicio</string>
+    <string name="nav_apps">Apps</string>
+    <string name="nav_protected">Protegidas</string>
+    <string name="nav_performance">Rendim.</string>
+    <string name="nav_settings">Ajustes</string>
+
+    <!-- Pantalla de inicio -->
+    <string name="home_title">Panel de privacidad</string>
+    <string name="home_subtitle">Resumen de seguridad del dispositivo</string>
+    <string name="home_total_apps">Apps escaneadas</string>
+    <string name="home_risky_apps">Permisos peligrosos</string>
+    <string name="home_accessibility_apps">Servicios de accesibilidad</string>
+    <string name="home_overlay_apps">Permiso de superposición</string>
+    <string name="home_recording_risk">Riesgo de grabación</string>
+    <string name="home_protected_apps">Apps protegidas</string>
+    <string name="home_last_scan">Último escaneo</string>
+    <string name="home_scan_now">Escanear ahora</string>
+    <string name="home_scanning">Escaneando…</string>
+
+    <!-- Pantalla de apps -->
+    <string name="apps_title">Apps instaladas</string>
+    <string name="apps_search_hint">Buscar por nombre o paquete…</string>
+    <string name="apps_filter_all">Todas</string>
+    <string name="apps_filter_high_risk">Alto riesgo</string>
+    <string name="apps_filter_accessibility">Accesibilidad</string>
+    <string name="apps_filter_overlay">Superposición</string>
+    <string name="apps_filter_camera_mic">Cámara / Micrófono</string>
+    <string name="apps_filter_recording">Riesgo de grabación</string>
+    <string name="apps_empty">Ninguna app coincide con tu filtro.</string>
+
+    <!-- Pantalla de apps protegidas -->
+    <string name="protected_title">Apps protegidas</string>
+    <string name="protected_subtitle">Las apps marcadas como sensibles reciben atención especial.</string>
+    <string name="protected_empty">Aún no hay apps protegidas. Añade apps desde la pantalla de Apps.</string>
+    <string name="protected_add">Añadir desde apps instaladas</string>
+    <string name="protected_remove">Quitar protección</string>
+
+    <!-- Pantalla de rendimiento -->
+    <string name="perf_title">Centro de rendimiento</string>
+    <string name="perf_subtitle">Optimizar y verificar protección</string>
+    <string name="perf_mode_light">Ligero</string>
+    <string name="perf_mode_balanced">Equilibrado</string>
+    <string name="perf_mode_maximum">Máximo</string>
+    <string name="perf_scan_stats">Estadísticas de escaneo</string>
+    <string name="perf_protection_verification">Verificación de protección</string>
+    <string name="perf_quick_actions">Acciones rápidas</string>
+    <string name="perf_clear_icons">Limpiar iconos</string>
+    <string name="perf_force_scan">Forzar escaneo</string>
+
+    <!-- Ajustes -->
+    <string name="settings_title">Ajustes</string>
+    <string name="settings_perf_section">Modo de rendimiento</string>
+    <string name="settings_scan_section">Opciones de escaneo</string>
+    <string name="settings_scan_accessibility">Detectar servicios de accesibilidad</string>
+    <string name="settings_scan_accessibility_sub">Encontrar apps registradas como servicios de accesibilidad.</string>
+    <string name="settings_scan_overlay">Detectar permiso de superposición</string>
+    <string name="settings_scan_overlay_sub">Marcar apps que pueden dibujar sobre otras apps.</string>
+    <string name="settings_scan_recording">Detectar riesgo de grabación</string>
+    <string name="settings_scan_recording_sub">Identificar apps con permisos de captura.</string>
+    <string name="settings_scan_dangerous">Detectar permisos peligrosos</string>
+    <string name="settings_scan_dangerous_sub">Marcar apps que piden cámara, micrófono, ubicación, etc.</string>
+    <string name="settings_notifications_section">Alertas</string>
+    <string name="settings_notify_high_risk">Notificar apps de alto riesgo</string>
+    <string name="settings_notify_high_risk_sub">Enviar notificación cuando se detecte una app de alto riesgo.</string>
+    <string name="settings_about_section">Acerca de</string>
+    <string name="settings_version">Versión 1.2.0</string>
+    <string name="settings_privacy_note">PrivacyShield funciona completamente sin conexión. Ningún dato sale de tu dispositivo. Sin analíticas. Sin telemetría.</string>
+
+    <!-- Permisos -->
+    <string name="perm_notification_title">Permitir notificaciones</string>
+    <string name="perm_notification_body">PrivacyShield usa notificaciones para alertarte cuando se detectan apps de alto riesgo. La app funciona completamente sin este permiso.</string>
+    <string name="perm_allow">Permitir</string>
+    <string name="perm_skip">Ahora no</string>
+
+    <!-- Niveles de riesgo -->
+    <string name="risk_low">Bajo</string>
+    <string name="risk_medium">Medio</string>
+    <string name="risk_high">Alto</string>
+    <string name="risk_critical">Crítico</string>
+
+    <!-- Explicaciones -->
+    <string name="explain_accessibility">Esta app registró un servicio de accesibilidad que puede leer el contenido de la pantalla y simular entradas en tu nombre.</string>
+    <string name="explain_overlay">Esta app puede dibujar sobre otras apps, ocultando potencialmente lo que ves o tocas.</string>
+    <string name="explain_recording">Esta app solicita permisos asociados con la captura de pantalla o audio.</string>
+    <string name="explain_dangerous">Esta app solicita uno o más permisos peligrosos (cámara, micrófono, ubicación, contactos, etc.).</string>
+    <string name="explain_protected">Las apps protegidas se marcan como sensibles. PrivacyShield destaca otras apps que podrían interactuar con ellas.</string>
+
+    <!-- Varios -->
+    <string name="never">Nunca</string>
+    <string name="unknown">Desconocido</string>
+    <string name="ok">Aceptar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="done">Listo</string>
+</resources>
