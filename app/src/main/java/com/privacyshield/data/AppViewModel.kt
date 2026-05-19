@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.privacyshield.data.model.InstalledAppInfo
 import com.privacyshield.data.repository.AppRepository
+import com.privacyshield.data.repository.ScanSettings
 import com.privacyshield.util.IconCache
 import com.privacyshield.util.PerformanceMode
 import kotlinx.coroutines.Dispatchers
@@ -43,11 +44,13 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
     val protectedPackages = repository.protectedPackagesFlow
 
     val performanceMode: StateFlow<PerformanceMode> = repository.performanceModeFlow
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.Eagerly,
-            initialValue = PerformanceMode.BALANCED
-        )
+        .stateIn(viewModelScope, SharingStarted.Eagerly, PerformanceMode.BALANCED)
+
+    val scanSettings: StateFlow<ScanSettings> = repository.scanSettingsFlow
+        .stateIn(viewModelScope, SharingStarted.Eagerly, ScanSettings())
+
+    val activeFilterName: StateFlow<String> = repository.activeFilterFlow
+        .stateIn(viewModelScope, SharingStarted.Eagerly, "ALL")
 
     private var scanJob: Job? = null
     private var lastScanStartedAt: Long = 0L
@@ -57,7 +60,6 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun scanApps(force: Boolean = false) {
-        // Debounce: don't start a new scan if one is already running
         if (_uiState.value.isScanning) return
 
         val mode = performanceMode.value
@@ -72,34 +74,22 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
             _uiState.update { it.copy(isScanning = true, error = null) }
             val startMs = System.currentTimeMillis()
             try {
-                val cacheTtl = mode.minScanIntervalMs
+                val currentSettings = scanSettings.value
                 val apps = repository.scanInstalledApps(
                     forceRefresh = force,
-                    cacheTtlMs = cacheTtl
+                    cacheTtlMs = mode.minScanIntervalMs,
+                    settings = currentSettings
                 )
                 val durationMs = System.currentTimeMillis() - startMs
                 _uiState.update {
-                    it.copy(
-                        apps = apps,
-                        isScanning = false,
-                        lastScanTime = System.currentTimeMillis()
-                    )
+                    it.copy(apps = apps, isScanning = false, lastScanTime = System.currentTimeMillis())
                 }
                 _scanStats.update {
-                    it.copy(
-                        lastDurationMs = durationMs,
-                        totalApps = apps.size,
-                        iconCacheSize = IconCache.size()
-                    )
+                    it.copy(lastDurationMs = durationMs, totalApps = apps.size, iconCacheSize = IconCache.size())
                 }
-                // Preload icons in background if MAXIMUM mode
-                if (mode.preloadIcons) {
-                    preloadIcons(apps)
-                }
+                if (mode.preloadIcons) preloadIcons(apps)
             } catch (e: Exception) {
-                _uiState.update {
-                    it.copy(isScanning = false, error = e.localizedMessage)
-                }
+                _uiState.update { it.copy(isScanning = false, error = e.localizedMessage) }
             }
         }
     }
@@ -107,9 +97,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
     private fun preloadIcons(apps: List<InstalledAppInfo>) {
         viewModelScope.launch(Dispatchers.IO) {
             val ctx = getApplication<Application>()
-            apps.forEach { app ->
-                IconCache.loadIcon(ctx, app.packageName)
-            }
+            apps.forEach { app -> IconCache.loadIcon(ctx, app.packageName) }
             _scanStats.update { it.copy(iconCacheSize = IconCache.size()) }
         }
     }
@@ -117,8 +105,20 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
     fun setPerformanceMode(mode: PerformanceMode) {
         viewModelScope.launch {
             repository.setPerformanceMode(mode)
-            // Immediately invalidate cache so next scan reflects new interval
             repository.invalidateCache()
+        }
+    }
+
+    fun updateScanSettings(settings: ScanSettings) {
+        viewModelScope.launch {
+            repository.updateScanSettings(settings)
+            repository.invalidateCache()
+        }
+    }
+
+    fun setActiveFilter(filterName: String) {
+        viewModelScope.launch {
+            repository.setActiveFilter(filterName)
         }
     }
 
@@ -130,7 +130,6 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
     fun addProtectedApp(packageName: String) {
         viewModelScope.launch {
             repository.addProtectedApp(packageName)
-            // Update in-place without full rescan
             _uiState.update { state ->
                 state.copy(apps = state.apps.map { app ->
                     if (app.packageName == packageName) app.copy(isProtected = true) else app
