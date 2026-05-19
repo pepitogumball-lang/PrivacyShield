@@ -14,8 +14,13 @@
     <!-- Post notifications (Android 13+ — requested at runtime) -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
-    <!-- Internet — reserved for future sync / CVE-feed features; no cleartext allowed -->
+    <!-- Internet — required for local-network TV control over TLS sockets -->
     <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- Wi-Fi state check + mDNS multicast lock for Android TV discovery -->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
 
     <application
         android:allowBackup="false"
