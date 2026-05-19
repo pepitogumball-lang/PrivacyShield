@@ -22,8 +22,8 @@ data class RemoteDevice(
 
         fun deserialize(raw: String): RemoteDevice? = try {
             val p = raw.split(SEPARATOR)
-            if (p.size < 7) return null
-            RemoteDevice(
+            if (p.size < 7) null
+            else RemoteDevice(
                 id = p[0],
                 name = p[1],
                 host = p[2],
