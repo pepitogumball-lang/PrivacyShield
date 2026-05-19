@@ -14,6 +14,7 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Speed
+import androidx.compose.material.icons.filled.Tv
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -41,6 +42,7 @@ import com.privacyshield.ui.screens.AppsScreen
 import com.privacyshield.ui.screens.HomeScreen
 import com.privacyshield.ui.screens.PerformanceScreen
 import com.privacyshield.ui.screens.ProtectedAppsScreen
+import com.privacyshield.ui.screens.RemoteScreen
 import com.privacyshield.ui.screens.SettingsScreen
 import com.privacyshield.ui.theme.BackgroundDark
 import com.privacyshield.ui.theme.CyanAccent
@@ -53,9 +55,10 @@ import com.privacyshield.util.PermissionManager
 sealed class Screen(val route: String, val label: String, val icon: ImageVector) {
     object Home : Screen("home", "Home", Icons.Default.Home)
     object Apps : Screen("apps", "Apps", Icons.Default.Apps)
-    object Protected : Screen("protected", "Protected", Icons.Default.Lock)
+    object Protected : Screen("protected", "Shield", Icons.Default.Lock)
     object Performance : Screen("performance", "Perf", Icons.Default.Speed)
     object Settings : Screen("settings", "Settings", Icons.Default.Settings)
+    object Remote : Screen("remote", "Remote", Icons.Default.Tv)
 }
 
 private val bottomNavItems = listOf(
@@ -63,7 +66,8 @@ private val bottomNavItems = listOf(
     Screen.Apps,
     Screen.Protected,
     Screen.Performance,
-    Screen.Settings
+    Screen.Settings,
+    Screen.Remote
 )
 
 class MainActivity : ComponentActivity() {
@@ -145,6 +149,7 @@ private fun PrivacyShieldApp() {
             composable(Screen.Protected.route) { ProtectedAppsScreen(viewModel = appViewModel) }
             composable(Screen.Performance.route) { PerformanceScreen(viewModel = appViewModel) }
             composable(Screen.Settings.route) { SettingsScreen(viewModel = appViewModel) }
+            composable(Screen.Remote.route) { RemoteScreen() }
         }
     }
 }
