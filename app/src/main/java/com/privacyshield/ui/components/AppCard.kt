@@ -1,6 +1,9 @@
 package com.privacyshield.ui.components
 
+import android.graphics.Bitmap
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -9,8 +12,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Accessibility
+import androidx.compose.material.icons.filled.Android
 import androidx.compose.material.icons.filled.Layers
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Videocam
@@ -20,8 +25,17 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.privacyshield.data.model.InstalledAppInfo
 import com.privacyshield.ui.theme.CyanAccent
@@ -30,11 +44,13 @@ import com.privacyshield.ui.theme.ProtectedBlue
 import com.privacyshield.ui.theme.SurfaceDark
 import com.privacyshield.ui.theme.SurfaceVariantDark
 import com.privacyshield.ui.theme.TextSecondary
+import com.privacyshield.util.IconCache
 
 @Composable
 fun AppCard(
     app: InstalledAppInfo,
     modifier: Modifier = Modifier,
+    showIcon: Boolean = true,
     onClick: () -> Unit = {}
 ) {
     val borderColor = if (app.isProtected) ProtectedBlue.copy(alpha = 0.6f) else OutlineDark
@@ -56,6 +72,10 @@ fun AppCard(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                if (showIcon) {
+                    AppIconImage(packageName = app.packageName)
+                    Spacer(modifier = Modifier.width(10.dp))
+                }
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = app.appName,
@@ -112,6 +132,46 @@ fun AppCard(
                     }
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun AppIconImage(
+    packageName: String,
+    modifier: Modifier = Modifier,
+    size: Int = 36
+) {
+    val context = LocalContext.current
+    var bitmap by remember(packageName) { mutableStateOf<Bitmap?>(IconCache.getSync(packageName)) }
+
+    LaunchedEffect(packageName) {
+        if (bitmap == null) {
+            bitmap = IconCache.loadIcon(context, packageName)
+        }
+    }
+
+    Box(
+        modifier = modifier.size(size.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        val bmp = bitmap
+        if (bmp != null) {
+            Image(
+                bitmap = bmp.asImageBitmap(),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(size.dp)
+                    .clip(RoundedCornerShape(8.dp)),
+                contentScale = ContentScale.Fit
+            )
+        } else {
+            Icon(
+                imageVector = Icons.Default.Android,
+                contentDescription = null,
+                tint = TextSecondary,
+                modifier = Modifier.size((size * 0.75f).dp)
+            )
         }
     }
 }
