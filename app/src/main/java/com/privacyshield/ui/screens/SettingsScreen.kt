@@ -1,5 +1,6 @@
 package com.privacyshield.ui.screens
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -36,15 +37,13 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.privacyshield.data.AppViewModel
+import com.privacyshield.data.repository.ScanSettings
 import com.privacyshield.ui.components.SectionHeader
 import com.privacyshield.ui.theme.BackgroundDark
 import com.privacyshield.ui.theme.CyanAccent
@@ -59,13 +58,10 @@ import com.privacyshield.util.PerformanceMode
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(viewModel: AppViewModel = viewModel()) {
-    val performanceMode by viewModel.performanceMode.collectAsState()
 
-    var scanAccessibility by remember { mutableStateOf(true) }
-    var scanOverlay by remember { mutableStateOf(true) }
-    var scanRecording by remember { mutableStateOf(true) }
-    var scanDangerous by remember { mutableStateOf(true) }
-    var notifyHighRisk by remember { mutableStateOf(false) }
+    // All settings are loaded from DataStore — restored automatically on every launch
+    val performanceMode by viewModel.performanceMode.collectAsState()
+    val scanSettings by viewModel.scanSettings.collectAsState()
 
     Scaffold(
         containerColor = BackgroundDark,
@@ -90,6 +86,7 @@ fun SettingsScreen(viewModel: AppViewModel = viewModel()) {
                 .padding(paddingValues),
             contentPadding = PaddingValues(bottom = 24.dp)
         ) {
+
             item {
                 SectionHeader(title = "Performance Mode")
                 SettingsCard {
@@ -124,7 +121,11 @@ fun SettingsScreen(viewModel: AppViewModel = viewModel()) {
                                         style = MaterialTheme.typography.bodyLarge,
                                         color = if (isSelected) accent else MaterialTheme.colorScheme.onSurface
                                     )
-                                    Text(text = mode.subtitle, style = MaterialTheme.typography.bodySmall, color = TextSecondary)
+                                    Text(
+                                        text = mode.subtitle,
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = TextSecondary
+                                    )
                                 }
                             }
                             Switch(
@@ -153,29 +154,29 @@ fun SettingsScreen(viewModel: AppViewModel = viewModel()) {
                         icon = Icons.Default.Accessibility,
                         title = "Detect accessibility services",
                         subtitle = "Find apps registered as accessibility services.",
-                        checked = scanAccessibility,
-                        onCheckedChange = { scanAccessibility = it }
+                        checked = scanSettings.scanAccessibility,
+                        onCheckedChange = { viewModel.updateScanSettings(scanSettings.copy(scanAccessibility = it)) }
                     )
                     ToggleRow(
                         icon = Icons.Default.Layers,
                         title = "Detect overlay permission",
                         subtitle = "Flag apps that can draw over other apps.",
-                        checked = scanOverlay,
-                        onCheckedChange = { scanOverlay = it }
+                        checked = scanSettings.scanOverlay,
+                        onCheckedChange = { viewModel.updateScanSettings(scanSettings.copy(scanOverlay = it)) }
                     )
                     ToggleRow(
                         icon = Icons.Default.Videocam,
                         title = "Detect recording risk",
                         subtitle = "Identify apps with capture-related permissions.",
-                        checked = scanRecording,
-                        onCheckedChange = { scanRecording = it }
+                        checked = scanSettings.scanRecording,
+                        onCheckedChange = { viewModel.updateScanSettings(scanSettings.copy(scanRecording = it)) }
                     )
                     ToggleRow(
                         icon = Icons.Default.Warning,
                         title = "Detect dangerous permissions",
                         subtitle = "Flag apps requesting camera, mic, location, etc.",
-                        checked = scanDangerous,
-                        onCheckedChange = { scanDangerous = it },
+                        checked = scanSettings.scanDangerous,
+                        onCheckedChange = { viewModel.updateScanSettings(scanSettings.copy(scanDangerous = it)) },
                         showDivider = false
                     )
                 }
@@ -188,9 +189,9 @@ fun SettingsScreen(viewModel: AppViewModel = viewModel()) {
                     ToggleRow(
                         icon = Icons.Default.Notifications,
                         title = "Notify on high-risk apps",
-                        subtitle = "Send a notification when a new high-risk app is found.",
-                        checked = notifyHighRisk,
-                        onCheckedChange = { notifyHighRisk = it },
+                        subtitle = "Send a notification when a high-risk app is found.",
+                        checked = scanSettings.notifyHighRisk,
+                        onCheckedChange = { viewModel.updateScanSettings(scanSettings.copy(notifyHighRisk = it)) },
                         showDivider = false
                     )
                 }
@@ -198,27 +199,22 @@ fun SettingsScreen(viewModel: AppViewModel = viewModel()) {
 
             item {
                 Spacer(modifier = Modifier.height(4.dp))
-                SectionHeader(title = "Privacy Note")
+                SectionHeader(title = "Privacy")
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp),
                     colors = CardDefaults.cardColors(containerColor = SurfaceDark),
-                    border = androidx.compose.foundation.BorderStroke(0.5.dp, OutlineDark)
+                    border = BorderStroke(0.5.dp, OutlineDark)
                 ) {
                     Row(
                         modifier = Modifier.padding(14.dp),
                         horizontalArrangement = Arrangement.spacedBy(10.dp),
                         verticalAlignment = Alignment.Top
                     ) {
-                        Icon(
-                            Icons.Default.PrivacyTip,
-                            contentDescription = null,
-                            tint = ProtectedBlue,
-                            modifier = Modifier.size(18.dp)
-                        )
+                        Icon(Icons.Default.PrivacyTip, contentDescription = null, tint = ProtectedBlue, modifier = Modifier.size(18.dp))
                         Text(
-                            text = "PrivacyShield works fully offline. No data leaves your device. No analytics. No telemetry.",
+                            text = "PrivacyShield works fully offline. No data ever leaves your device. No analytics. No telemetry.",
                             style = MaterialTheme.typography.bodySmall,
                             color = TextSecondary
                         )
@@ -234,30 +230,18 @@ fun SettingsScreen(viewModel: AppViewModel = viewModel()) {
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp),
                     colors = CardDefaults.cardColors(containerColor = SurfaceDark),
-                    border = androidx.compose.foundation.BorderStroke(0.5.dp, OutlineDark)
+                    border = BorderStroke(0.5.dp, OutlineDark)
                 ) {
                     Column(modifier = Modifier.padding(14.dp)) {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
-                            Icon(
-                                Icons.Default.Info,
-                                contentDescription = null,
-                                tint = TextSecondary,
-                                modifier = Modifier.size(16.dp)
-                            )
-                            Text(
-                                text = "Version 1.1.0",
-                                style = MaterialTheme.typography.bodyMedium
-                            )
+                            Icon(Icons.Default.Info, contentDescription = null, tint = TextSecondary, modifier = Modifier.size(16.dp))
+                            Text("Version 1.2.0", style = MaterialTheme.typography.bodyMedium)
                         }
                         Spacer(modifier = Modifier.height(4.dp))
-                        Text(
-                            text = "com.privacyshield",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = TextSecondary
-                        )
+                        Text("com.privacyshield", style = MaterialTheme.typography.bodySmall, color = TextSecondary)
                     }
                 }
             }
@@ -272,7 +256,7 @@ private fun SettingsCard(content: @Composable () -> Unit) {
             .fillMaxWidth()
             .padding(horizontal = 16.dp),
         colors = CardDefaults.cardColors(containerColor = SurfaceDark),
-        border = androidx.compose.foundation.BorderStroke(0.5.dp, OutlineDark)
+        border = BorderStroke(0.5.dp, OutlineDark)
     ) {
         Column { content() }
     }
@@ -318,10 +302,7 @@ private fun ToggleRow(
             )
         }
         if (showDivider) {
-            HorizontalDivider(
-                modifier = Modifier.padding(horizontal = 14.dp),
-                color = OutlineDark
-            )
+            HorizontalDivider(modifier = Modifier.padding(horizontal = 14.dp), color = OutlineDark)
         }
     }
 }
