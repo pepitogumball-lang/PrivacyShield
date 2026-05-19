@@ -61,39 +61,43 @@ fun AppsScreen(
     onAppClick: (InstalledAppInfo) -> Unit = {}
 ) {
     val state by viewModel.uiState.collectAsState()
+    val performanceMode by viewModel.performanceMode.collectAsState()
+
+    // Persisted filter restored from DataStore on every launch
+    val activeFilterName by viewModel.activeFilterName.collectAsState()
+    val activeFilter = try {
+        AppFilter.valueOf(activeFilterName)
+    } catch (_: IllegalArgumentException) {
+        AppFilter.ALL
+    }
+
+    // Search query stays local (restoring a search across sessions would be confusing UX)
     var query by remember { mutableStateOf("") }
-    var activeFilter by remember { mutableStateOf(AppFilter.ALL) }
 
     val filtered = remember(state.apps, query, activeFilter) {
-        state.apps
-            .filter { app ->
-                val matchesQuery = query.isBlank() ||
-                        app.appName.contains(query, ignoreCase = true) ||
-                        app.packageName.contains(query, ignoreCase = true)
-                val matchesFilter = when (activeFilter) {
-                    AppFilter.ALL -> true
-                    AppFilter.HIGH_RISK -> app.riskLevel == RiskLevel.HIGH || app.riskLevel == RiskLevel.CRITICAL
-                    AppFilter.ACCESSIBILITY -> app.hasAccessibilityService
-                    AppFilter.OVERLAY -> app.hasOverlayPermission
-                    AppFilter.CAMERA_MIC -> app.permissions.any { p ->
-                        p.contains("CAMERA", ignoreCase = true) || p.contains("RECORD_AUDIO", ignoreCase = true)
-                    }
-                    AppFilter.RECORDING -> app.hasRecordingRisk
+        state.apps.filter { app ->
+            val matchesQuery = query.isBlank() ||
+                    app.appName.contains(query, ignoreCase = true) ||
+                    app.packageName.contains(query, ignoreCase = true)
+            val matchesFilter = when (activeFilter) {
+                AppFilter.ALL -> true
+                AppFilter.HIGH_RISK -> app.riskLevel == RiskLevel.HIGH || app.riskLevel == RiskLevel.CRITICAL
+                AppFilter.ACCESSIBILITY -> app.hasAccessibilityService
+                AppFilter.OVERLAY -> app.hasOverlayPermission
+                AppFilter.CAMERA_MIC -> app.permissions.any { p ->
+                    p.contains("CAMERA", ignoreCase = true) || p.contains("RECORD_AUDIO", ignoreCase = true)
                 }
-                matchesQuery && matchesFilter
+                AppFilter.RECORDING -> app.hasRecordingRisk
             }
+            matchesQuery && matchesFilter
+        }
     }
 
     Scaffold(
         containerColor = BackgroundDark,
         topBar = {
             TopAppBar(
-                title = {
-                    Text(
-                        text = "Installed Apps",
-                        style = MaterialTheme.typography.titleLarge
-                    )
-                },
+                title = { Text("Installed Apps", style = MaterialTheme.typography.titleLarge) },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = BackgroundDark)
             )
         }
@@ -109,12 +113,8 @@ fun AppsScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp, vertical = 8.dp),
-                placeholder = {
-                    Text("Search by name or package…", color = TextSecondary)
-                },
-                leadingIcon = {
-                    Icon(Icons.Default.Search, contentDescription = null, tint = TextSecondary)
-                },
+                placeholder = { Text("Search by name or package…", color = TextSecondary) },
+                leadingIcon = { Icon(Icons.Default.Search, contentDescription = null, tint = TextSecondary) },
                 singleLine = true,
                 shape = RoundedCornerShape(10.dp),
                 colors = OutlinedTextFieldDefaults.colors(
@@ -133,7 +133,7 @@ fun AppsScreen(
                 AppFilter.entries.forEach { filter ->
                     FilterChip(
                         selected = filter == activeFilter,
-                        onClick = { activeFilter = filter },
+                        onClick = { viewModel.setActiveFilter(filter.name) },
                         label = { Text(filter.label, style = MaterialTheme.typography.labelLarge) },
                         colors = FilterChipDefaults.filterChipColors(
                             selectedContainerColor = CyanAccent.copy(alpha = 0.15f),
@@ -163,7 +163,11 @@ fun AppsScreen(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     items(filtered, key = { it.packageName }) { app ->
-                        AppCard(app = app, onClick = { onAppClick(app) })
+                        AppCard(
+                            app = app,
+                            showIcon = performanceMode.showIcons,
+                            onClick = { onAppClick(app) }
+                        )
                     }
                 }
             }
