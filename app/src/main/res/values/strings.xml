@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">PrivacyShield</string>
+    <string name="app_tagline">Privacy you can see.</string>
 
     <!-- Navigation -->
     <string name="nav_home">Home</string>
     <string name="nav_apps">Apps</string>
     <string name="nav_protected">Protected</string>
+    <string name="nav_performance">Perf</string>
     <string name="nav_settings">Settings</string>
 
     <!-- Home screen -->
@@ -39,18 +41,42 @@
     <string name="protected_add">Add from installed apps</string>
     <string name="protected_remove">Remove protection</string>
 
+    <!-- Performance screen -->
+    <string name="perf_title">Performance Center</string>
+    <string name="perf_subtitle">Optimize and verify protection</string>
+    <string name="perf_mode_light">Light</string>
+    <string name="perf_mode_balanced">Balanced</string>
+    <string name="perf_mode_maximum">Maximum</string>
+    <string name="perf_scan_stats">Scan Statistics</string>
+    <string name="perf_protection_verification">Protection Verification</string>
+    <string name="perf_quick_actions">Quick Actions</string>
+    <string name="perf_clear_icons">Clear Icons</string>
+    <string name="perf_force_scan">Force Scan</string>
+
     <!-- Settings screen -->
     <string name="settings_title">Settings</string>
+    <string name="settings_perf_section">Performance Mode</string>
     <string name="settings_scan_section">Scan Options</string>
     <string name="settings_scan_accessibility">Detect accessibility services</string>
+    <string name="settings_scan_accessibility_sub">Find apps registered as accessibility services.</string>
     <string name="settings_scan_overlay">Detect overlay permission</string>
+    <string name="settings_scan_overlay_sub">Flag apps that can draw over other apps.</string>
     <string name="settings_scan_recording">Detect recording risk indicators</string>
+    <string name="settings_scan_recording_sub">Identify apps with capture-related permissions.</string>
     <string name="settings_scan_dangerous">Detect dangerous permissions</string>
+    <string name="settings_scan_dangerous_sub">Flag apps requesting camera, mic, location, etc.</string>
     <string name="settings_notifications_section">Alerts</string>
     <string name="settings_notify_high_risk">Notify on high-risk apps</string>
+    <string name="settings_notify_high_risk_sub">Send a notification when a high-risk app is found.</string>
     <string name="settings_about_section">About</string>
-    <string name="settings_version">Version</string>
-    <string name="settings_privacy_note">PrivacyShield works fully offline. No data leaves your device.</string>
+    <string name="settings_version">Version 1.2.0</string>
+    <string name="settings_privacy_note">PrivacyShield works fully offline. No data leaves your device. No analytics. No telemetry.</string>
+
+    <!-- Permissions -->
+    <string name="perm_notification_title">Allow Notifications</string>
+    <string name="perm_notification_body">PrivacyShield uses notifications to alert you when high-risk apps are detected. The app works fully without this permission.</string>
+    <string name="perm_allow">Allow</string>
+    <string name="perm_skip">Not now</string>
 
     <!-- Risk levels -->
     <string name="risk_low">Low</string>
