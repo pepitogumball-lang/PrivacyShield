@@ -5,6 +5,7 @@ import android.content.pm.PackageInfo
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.privacyshield.data.model.InstalledAppInfo
@@ -14,10 +15,13 @@ import com.privacyshield.data.scanner.OverlayScanner
 import com.privacyshield.data.scanner.PermissionScanner
 import com.privacyshield.data.scanner.RecordingRiskScanner
 import com.privacyshield.util.PackageUtils
+import com.privacyshield.util.PerformanceMode
 import com.privacyshield.util.RiskCalculator
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "privacy_shield_prefs")
 
@@ -25,6 +29,28 @@ class AppRepository(private val context: Context) {
 
     companion object {
         private val PROTECTED_PACKAGES_KEY = stringSetPreferencesKey("protected_packages")
+        private val PERFORMANCE_MODE_KEY = intPreferencesKey("performance_mode")
+    }
+
+    // ── In-memory scan cache ───────────────────────────────────────────────
+
+    @Volatile private var cachedBaseApps: List<InstalledAppInfo> = emptyList()
+    @Volatile private var cacheTimestamp: Long = 0L
+
+    fun invalidateCache() {
+        cacheTimestamp = 0L
+    }
+
+    // ── Performance mode ──────────────────────────────────────────────────
+
+    val performanceModeFlow: Flow<PerformanceMode> = context.dataStore.data.map { prefs ->
+        PerformanceMode.fromOrdinal(prefs[PERFORMANCE_MODE_KEY] ?: PerformanceMode.BALANCED.ordinal)
+    }
+
+    suspend fun setPerformanceMode(mode: PerformanceMode) {
+        context.dataStore.edit { prefs ->
+            prefs[PERFORMANCE_MODE_KEY] = mode.ordinal
+        }
     }
 
     // ── Protected apps persistence ─────────────────────────────────────────
@@ -49,14 +75,28 @@ class AppRepository(private val context: Context) {
 
     // ── App scanning ───────────────────────────────────────────────────────
 
-    suspend fun scanInstalledApps(): List<InstalledAppInfo> {
-        val packages: List<PackageInfo> = PackageUtils.getAllInstalledPackages(context)
-        val accessibilityPackages = AccessibilityScanner.getAccessibilityPackages(context)
+    suspend fun scanInstalledApps(forceRefresh: Boolean = false, cacheTtlMs: Long = 60_000L): List<InstalledAppInfo> {
         val protectedPackages = protectedPackagesFlow.first()
+        val now = System.currentTimeMillis()
 
-        return packages.mapNotNull { packageInfo ->
-            buildAppInfo(packageInfo, accessibilityPackages, protectedPackages)
-        }.sortedByDescending { it.riskLevel.score }
+        // Return cached result if still fresh (unless forceRefresh)
+        if (!forceRefresh && cachedBaseApps.isNotEmpty() && (now - cacheTimestamp) < cacheTtlMs) {
+            return cachedBaseApps.map { it.copy(isProtected = it.packageName in protectedPackages) }
+        }
+
+        val freshApps = withContext(Dispatchers.Default) {
+            val packages: List<PackageInfo> = PackageUtils.getAllInstalledPackages(context)
+            val accessibilityPackages = AccessibilityScanner.getAccessibilityPackages(context)
+
+            packages.mapNotNull { packageInfo ->
+                buildAppInfo(packageInfo, accessibilityPackages, protectedPackages)
+            }.sortedByDescending { it.riskLevel.score }
+        }
+
+        cachedBaseApps = freshApps.map { it.copy(isProtected = false) }
+        cacheTimestamp = now
+
+        return freshApps
     }
 
     private fun buildAppInfo(
@@ -94,7 +134,7 @@ class AppRepository(private val context: Context) {
                 isSystemApp = isSystem,
                 isProtected = pkg in protectedPackages
             )
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             null
         }
     }
