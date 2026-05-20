@@ -124,6 +124,51 @@
     <string name="remote_show">Mostrar</string>
     <string name="remote_discovery_unavailable">Descubrimiento no disponible</string>
 
+    <!-- Navegación Bot Hub -->
+    <string name="nav_bots">Bots</string>
+
+    <!-- Pantalla Bot Hub -->
+    <string name="bothub_title">Centro de bots</string>
+    <string name="bothub_tab_personas">Personas</string>
+    <string name="bothub_tab_contacts">Contactos</string>
+    <string name="bothub_tab_conversations">Chats</string>
+    <string name="bothub_persona_create">Nueva persona</string>
+    <string name="bothub_persona_edit">Editar persona</string>
+    <string name="bothub_contact_create">Nuevo contacto</string>
+    <string name="bothub_contact_edit">Editar contacto</string>
+    <string name="bothub_conversation_new">Nueva conversación</string>
+    <string name="bothub_empty_personas">Aún no hay personas</string>
+    <string name="bothub_empty_personas_hint">Toca + para crear tu primera persona bot</string>
+    <string name="bothub_empty_contacts">Aún no hay contactos</string>
+    <string name="bothub_empty_contacts_hint">Toca + para añadir tu primer contacto</string>
+    <string name="bothub_empty_conversations">Aún no hay conversaciones</string>
+    <string name="bothub_empty_conversations_hint">Crea una persona y un contacto primero, luego toca + para iniciar un chat</string>
+    <string name="bothub_auto_reply">Respuesta automática</string>
+    <string name="bothub_auto_reply_hint">El bot responde automáticamente a los mensajes del contacto</string>
+    <string name="bothub_reply_rules">Reglas de respuesta</string>
+    <string name="bothub_add_rule">Añadir regla</string>
+    <string name="bothub_keyword_trigger">Palabra clave activadora</string>
+    <string name="bothub_bot_response">Respuesta del bot</string>
+    <string name="bothub_select_persona">Seleccionar persona\u2026</string>
+    <string name="bothub_select_contact">Seleccionar contacto\u2026</string>
+    <string name="bothub_send">Enviar</string>
+    <string name="bothub_sending_as_bot">El bot dice\u2026</string>
+    <string name="bothub_sending_as_contact">El contacto dice\u2026</string>
+    <string name="bothub_typing">está escribiendo\u2026</string>
+    <string name="bothub_auto_active">Respuesta automática activa</string>
+    <string name="bothub_archive">Archivar</string>
+    <string name="bothub_delete_persona">Eliminar persona</string>
+    <string name="bothub_delete_contact">Eliminar contacto</string>
+    <string name="bothub_delete_conversation">Eliminar conversación</string>
+    <string name="bothub_duplicate">Duplicar</string>
+    <string name="bothub_no_messages">Aún no hay mensajes</string>
+    <string name="bothub_no_messages_hint">Escribe un mensaje abajo para iniciar la conversación</string>
+    <string name="bothub_tone_label">Tono</string>
+    <string name="bothub_formality_label">Formalidad</string>
+    <string name="bothub_emoji_label">Uso de emojis</string>
+    <string name="bothub_speed_label">Velocidad de respuesta</string>
+    <string name="bothub_via">vía</string>
+
     <!-- Varios -->
     <string name="never">Nunca</string>
     <string name="unknown">Desconocido</string>
