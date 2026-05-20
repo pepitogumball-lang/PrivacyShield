@@ -124,6 +124,51 @@
     <string name="remote_show">Show</string>
     <string name="remote_discovery_unavailable">Discovery unavailable</string>
 
+    <!-- Bot Hub navigation -->
+    <string name="nav_bots">Bots</string>
+
+    <!-- Bot Hub screen -->
+    <string name="bothub_title">Bot Hub</string>
+    <string name="bothub_tab_personas">Personas</string>
+    <string name="bothub_tab_contacts">Contacts</string>
+    <string name="bothub_tab_conversations">Chats</string>
+    <string name="bothub_persona_create">New Persona</string>
+    <string name="bothub_persona_edit">Edit Persona</string>
+    <string name="bothub_contact_create">New Contact</string>
+    <string name="bothub_contact_edit">Edit Contact</string>
+    <string name="bothub_conversation_new">New Conversation</string>
+    <string name="bothub_empty_personas">No personas yet</string>
+    <string name="bothub_empty_personas_hint">Tap + to create your first bot persona</string>
+    <string name="bothub_empty_contacts">No contacts yet</string>
+    <string name="bothub_empty_contacts_hint">Tap + to add your first contact</string>
+    <string name="bothub_empty_conversations">No conversations yet</string>
+    <string name="bothub_empty_conversations_hint">Create a persona and contact first, then tap + to start a chat</string>
+    <string name="bothub_auto_reply">Auto-Reply</string>
+    <string name="bothub_auto_reply_hint">Bot replies automatically to contact messages</string>
+    <string name="bothub_reply_rules">Reply Rules</string>
+    <string name="bothub_add_rule">Add Rule</string>
+    <string name="bothub_keyword_trigger">Keyword trigger</string>
+    <string name="bothub_bot_response">Bot response</string>
+    <string name="bothub_select_persona">Select persona\u2026</string>
+    <string name="bothub_select_contact">Select contact\u2026</string>
+    <string name="bothub_send">Send</string>
+    <string name="bothub_sending_as_bot">Bot says\u2026</string>
+    <string name="bothub_sending_as_contact">Contact says\u2026</string>
+    <string name="bothub_typing">is typing\u2026</string>
+    <string name="bothub_auto_active">Auto-reply active</string>
+    <string name="bothub_archive">Archive</string>
+    <string name="bothub_delete_persona">Delete Persona</string>
+    <string name="bothub_delete_contact">Delete Contact</string>
+    <string name="bothub_delete_conversation">Delete conversation</string>
+    <string name="bothub_duplicate">Duplicate</string>
+    <string name="bothub_no_messages">No messages yet</string>
+    <string name="bothub_no_messages_hint">Type a message below to start the conversation</string>
+    <string name="bothub_tone_label">Tone</string>
+    <string name="bothub_formality_label">Formality</string>
+    <string name="bothub_emoji_label">Emoji Usage</string>
+    <string name="bothub_speed_label">Reply Speed</string>
+    <string name="bothub_via">via</string>
+
     <!-- Misc -->
     <string name="never">Never</string>
     <string name="unknown">Unknown</string>
