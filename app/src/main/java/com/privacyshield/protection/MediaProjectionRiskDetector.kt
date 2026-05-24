@@ -54,8 +54,9 @@ class MediaProjectionRiskDetector(
 
     private fun computeRisk(): Boolean {
         val routeRisk = runCatching {
-            val selected = mediaRouter?.selectedRoute
-            selected != null && selected != mediaRouter.defaultRoute
+            val selected = mediaRouter?.getSelectedRoute(MediaRouter.ROUTE_TYPE_LIVE_VIDEO)
+            val defaultRoute = mediaRouter?.defaultRoute
+            selected != null && defaultRoute != null && selected != defaultRoute
         }.getOrDefault(false)
 
         val multiDisplayRisk = runCatching {

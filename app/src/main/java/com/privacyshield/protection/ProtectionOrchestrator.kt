@@ -115,8 +115,9 @@ androidx.core.content.ContextCompat.startForegroundService(applicationContext, r
 
     private fun isSuspiciousCaptureActive(): Boolean {
         val mediaRouter = getSystemService(MediaRouter::class.java)
-        val selectedRoute = mediaRouter?.selectedRoute
-        val routeEnabled = selectedRoute != null && selectedRoute != mediaRouter.defaultRoute
+        val selectedRoute = mediaRouter?.getSelectedRoute(MediaRouter.ROUTE_TYPE_LIVE_VIDEO)
+        val defaultRoute = mediaRouter?.defaultRoute
+        val routeEnabled = selectedRoute != null && defaultRoute != null && selectedRoute != defaultRoute
         val isMirroring = (getSystemService(DisplayManager::class.java)?.displays?.size ?: 1) > 1
         return routeEnabled || isMirroring
     }
