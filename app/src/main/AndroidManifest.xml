@@ -16,6 +16,8 @@
 
     <!-- Internet — required for local-network TV control over TLS sockets -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" tools:ignore="ProtectedPermissions" />
 
     <!-- Wi-Fi state check + mDNS multicast lock for Android TV discovery -->
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
@@ -48,6 +50,23 @@
             android:name=".service.PrivacyWatchService"
             android:foregroundServiceType="dataSync"
             android:exported="false" />
+        <service
+            android:name=".protection.ProtectionOrchestratorService"
+            android:foregroundServiceType="dataSync"
+            android:exported="false" />
+
+        <service
+            android:name=".protection.PrivacyAccessibilityService"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/privacy_accessibility_service" />
+        </service>
+
 
     </application>
 

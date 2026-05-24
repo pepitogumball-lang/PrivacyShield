@@ -169,6 +169,13 @@
     <string name="bothub_speed_label">Reply Speed</string>
     <string name="bothub_via">via</string>
 
+    <string name="accessibility_service_desc">Monitors foreground app changes to protect selected apps during suspicious capture activity.</string>
+    <string name="protection_enable">Enable live protection</string>
+    <string name="protection_disable">Disable live protection</string>
+    <string name="protection_perm_overlay">Grant overlay permission</string>
+    <string name="protection_perm_usage">Grant usage access</string>
+    <string name="protection_perm_accessibility">Grant accessibility service</string>
+
     <!-- Misc -->
     <string name="never">Never</string>
     <string name="unknown">Unknown</string>
