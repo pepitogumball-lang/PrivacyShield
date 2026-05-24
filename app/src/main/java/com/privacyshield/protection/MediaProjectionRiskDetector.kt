@@ -3,6 +3,7 @@ package com.privacyshield.protection
 import android.content.Context
 import android.hardware.display.DisplayManager
 import android.media.MediaRouter
+import android.util.Log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -24,6 +25,7 @@ class MediaProjectionRiskDetector(
     private val scope: CoroutineScope,
     private val usageFallback: UsageStatsForegroundDetector
 ) {
+    companion object { private const val TAG = "MediaProjectionRisk" }
     private val mediaRouter = context.getSystemService(MediaRouter::class.java)
     private val displayManager = context.getSystemService(DisplayManager::class.java)
 
@@ -40,7 +42,11 @@ class MediaProjectionRiskDetector(
         if (pollJob != null) return
         pollJob = scope.launch(Dispatchers.Default) {
             while (isActive) {
-                _isCaptureRiskActive.value = computeRisk()
+                val risk = computeRisk()
+                if (_isCaptureRiskActive.value != risk) {
+                    Log.i(TAG, "Capture risk changed=$risk")
+                }
+                _isCaptureRiskActive.value = risk
                 delay(500L)
             }
         }
@@ -69,6 +75,10 @@ class MediaProjectionRiskDetector(
             knownScreenShareKeywords.any { value.contains(it) }
         } ?: false
 
-        return routeRisk || multiDisplayRisk || knownCaptureAppForeground
+        val result = routeRisk || multiDisplayRisk || knownCaptureAppForeground
+        if (result) {
+            Log.d(TAG, "risk route=$routeRisk display=$multiDisplayRisk knownApp=$knownCaptureAppForeground fg=$foregroundPkg")
+        }
+        return result
     }
 }

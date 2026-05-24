@@ -8,6 +8,7 @@ import android.provider.Settings
 import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
+import android.util.Log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -19,6 +20,7 @@ class BlackOverlayController(
     private val windowManager: WindowManager,
     private val scope: CoroutineScope
 ) {
+    companion object { private const val TAG = "BlackOverlayController" }
     private var overlayView: View? = null
     private var desiredVisible = false
     private var applyJob: Job? = null
@@ -28,6 +30,7 @@ class BlackOverlayController(
     private val minVisibleMs = 500L
     private val minHiddenMs = 150L
     private val settleDelayMs = 65L
+    var onOverlayVisibilityChanged: ((Boolean, Long) -> Unit)? = null
 
     fun setDesiredVisible(visible: Boolean) {
         desiredVisible = visible
@@ -90,6 +93,8 @@ class BlackOverlayController(
         overlayView = View(context).apply { setBackgroundColor(Color.BLACK) }
         windowManager.addView(overlayView, params)
         lastShowAtMs = SystemClock.elapsedRealtime()
+        Log.i(TAG, "Overlay shown at=$lastShowAtMs")
+        onOverlayVisibilityChanged?.invoke(true, lastShowAtMs)
     }
 
     private fun hideNow() {
@@ -97,6 +102,8 @@ class BlackOverlayController(
             windowManager.removeViewImmediate(it)
             overlayView = null
             lastHideAtMs = SystemClock.elapsedRealtime()
+            Log.i(TAG, "Overlay hidden at=$lastHideAtMs")
+            onOverlayVisibilityChanged?.invoke(false, lastHideAtMs)
         }
     }
 }
