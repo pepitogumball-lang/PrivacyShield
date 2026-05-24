@@ -32,6 +32,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -40,8 +41,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.privacyshield.protection.ProtectionOrchestratorService
+import android.content.Intent
+import android.net.Uri
+import android.os.PowerManager
+import android.provider.Settings
 import com.privacyshield.data.AppViewModel
 import com.privacyshield.data.repository.ScanSettings
 import com.privacyshield.ui.components.SectionHeader
@@ -62,6 +70,7 @@ fun SettingsScreen(viewModel: AppViewModel = viewModel()) {
     // All settings are loaded from DataStore — restored automatically on every launch
     val performanceMode by viewModel.performanceMode.collectAsState()
     val scanSettings by viewModel.scanSettings.collectAsState()
+    val context = LocalContext.current
 
     Scaffold(
         containerColor = BackgroundDark,
@@ -197,6 +206,37 @@ fun SettingsScreen(viewModel: AppViewModel = viewModel()) {
                 }
             }
 
+
+            item {
+                Spacer(modifier = Modifier.height(4.dp))
+                SectionHeader(title = "Live Protection")
+                SettingsCard {
+                    ActionRow(title = "Overlay permission", action = "Open") {
+                        context.startActivity(Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:${context.packageName}")))
+                    }
+                    ActionRow(title = "Usage access", action = "Open") {
+                        context.startActivity(Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS))
+                    }
+                    ActionRow(title = "Accessibility service", action = "Open") {
+                        context.startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
+                    }
+                    ActionRow(title = "Battery optimization", action = "Open") {
+                        val pm = context.getSystemService(PowerManager::class.java)
+                        if (!pm.isIgnoringBatteryOptimizations(context.packageName)) {
+                            context.startActivity(Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS, Uri.parse("package:${context.packageName}")))
+                        }
+                    }
+                    ActionRow(title = "Enable live protection", action = "Start") {
+                        val i = Intent(context, ProtectionOrchestratorService::class.java).apply { action = ProtectionOrchestratorService.ACTION_START }
+                        ContextCompat.startForegroundService(context, i)
+                    }
+                    ActionRow(title = "Disable live protection", action = "Stop", showDivider = false) {
+                        val i = Intent(context, ProtectionOrchestratorService::class.java).apply { action = ProtectionOrchestratorService.ACTION_STOP }
+                        context.startService(i)
+                    }
+                }
+            }
+
             item {
                 Spacer(modifier = Modifier.height(4.dp))
                 SectionHeader(title = "Privacy")
@@ -304,5 +344,23 @@ private fun ToggleRow(
         if (showDivider) {
             HorizontalDivider(modifier = Modifier.padding(horizontal = 14.dp), color = OutlineDark)
         }
+    }
+}
+
+
+@Composable
+private fun ActionRow(title: String, action: String, showDivider: Boolean = true, onClick: () -> Unit) {
+    Column {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 14.dp, vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(text = title, style = MaterialTheme.typography.bodyLarge)
+            TextButton(onClick = onClick) { Text(action) }
+        }
+        if (showDivider) HorizontalDivider(modifier = Modifier.padding(horizontal = 14.dp), color = OutlineDark)
     }
 }
