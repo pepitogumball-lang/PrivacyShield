@@ -22,28 +22,6 @@ jobs:
           java-version: '17'
           cache: gradle
 
-      - name: Bootstrap Gradle wrapper jar
-        run: |
-          GRADLE_VERSION="8.4"
-          GRADLE_ZIP="/tmp/gradle-${GRADLE_VERSION}-bin.zip"
-          GRADLE_DIR="/tmp/gradle-${GRADLE_VERSION}"
-
-          echo "Downloading Gradle ${GRADLE_VERSION}…"
-          curl -fsSL "https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip" \
-            -o "${GRADLE_ZIP}"
-
-          echo "Extracting…"
-          unzip -q "${GRADLE_ZIP}" -d /tmp
-
-          echo "Generating wrapper jar…"
-          "${GRADLE_DIR}/bin/gradle" wrapper \
-            --gradle-version "${GRADLE_VERSION}" \
-            --distribution-type bin \
-            --project-dir .
-
-          echo "Wrapper jar generated:"
-          ls -lh gradle/wrapper/gradle-wrapper.jar
-
       - name: Grant execute permission to gradlew
         run: chmod +x ./gradlew
 
