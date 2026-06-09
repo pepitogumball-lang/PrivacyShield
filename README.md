@@ -1,68 +1,40 @@
-# PrivacyShield
+# PrivacyShield — Android Privacy Audit & Monitoring
 
-A privacy and security app for Android 14 that helps you inspect installed apps, detect risky permissions, and manage a protected-apps list.
+PrivacyShield es una herramienta de auditoría de seguridad para Android diseñada para identificar aplicaciones con capacidades intrusivas y proporcionar una capa de monitoreo reactivo contra la captura de pantalla no autorizada.
 
-## Features
+## 🛡️ Lo que PrivacyShield HACE por ti
+*   **Auditoría de Riesgos:** Escanea todas las aplicaciones instaladas y las clasifica según su potencial de riesgo (Servicios de Accesibilidad, Superposición de Pantalla, Grabación de Audio/Video y Permisos Peligrosos).
+*   **Monitoreo en Vivo:** Utiliza un servicio en primer plano que detecta cuándo una aplicación marcada como "Protegida" está abierta simultáneamente con una aplicación sospechosa o una herramienta de captura de pantalla.
+*   **Bloqueo de Pantalla (Overlay):** Si se detecta un riesgo de captura mientras usas una app protegida, PrivacyShield despliega un protector negro sobre la pantalla para evitar la filtración de datos sensibles.
+*   **100% Offline:** Todo el procesamiento ocurre localmente. Sin telemetría, sin analíticas, sin permisos de internet para el núcleo de privacidad.
 
-- **Dashboard** — instant overview of dangerous permissions, accessibility services, overlay permission, screen-recording risk, and protected app count
-- **App scanner** — lists all installed apps with risk level, permission details, and category filters
-- **Protected apps** — mark apps as sensitive; PrivacyShield highlights other apps that may interact with them
-- **Settings** — toggle scan categories and alerts; fully offline, no telemetry
+## ⚠️ Límites Técnicos (Honestidad Android)
+Debido a las restricciones de seguridad de Android estándar (sin Root), PrivacyShield tiene los siguientes límites:
+1.  **No puede "Matar" otras Apps:** Android impide que una app cierre a otra. Nuestra protección es visual (overlay) para proteger tus datos, no un cierre forzado del proceso atacante.
+2.  **Detección Heurística:** La detección de captura de pantalla se basa en cambios en las rutas de medios y estados de visualización. Puede no detectar herramientas de captura extremadamente avanzadas o de sistema.
+3.  **Dependencia de Permisos:** Para funcionar correctamente, requiere que el usuario conceda manualmente:
+    *   **Servicio de Accesibilidad:** Para detectar qué app está en primer plano.
+    *   **Acceso a Uso:** Como respaldo para la detección de aplicaciones.
+    *   **Mostrar sobre otras apps:** Para poder desplegar el protector de pantalla.
 
-## Tech stack
+## 🛠️ Stack Tecnológico
+*   **Lenguaje:** Kotlin
+*   **UI:** Jetpack Compose + Material 3
+*   **Arquitectura:** MVVM + StateFlow
+*   **Persistencia:** DataStore Preferences
+*   **Mínimo SDK:** 26 (Android 8.0)
+*   **Target SDK:** 34 (Android 14)
 
-| Layer | Technology |
-|---|---|
-| Language | Kotlin |
-| UI | Jetpack Compose + Material 3 |
-| Architecture | MVVM + StateFlow |
-| Persistence | DataStore Preferences |
-| Navigation | Navigation Compose |
-| Build | Gradle Kotlin DSL |
-| Min SDK | 26 (Android 8) |
-| Target SDK | 34 (Android 14) |
+## 🚀 Compilación
+### Requisitos
+*   JDK 17
+*   Android SDK (Platform 34)
 
-## Building
-
-### Requirements
-
-- JDK 17
-- Android SDK with platform 34 installed
-- `local.properties` containing your `sdk.dir` path (copy from `local.properties.example`)
-
-### Debug build
-
+### Comando
 ```bash
 ./gradlew assembleDebug
 ```
+El APK resultante se encontrará en: `app/build/outputs/apk/debug/app-debug.apk`
 
-APK output: `app/build/outputs/apk/debug/app-debug.apk`
-
-### GitHub Actions
-
-Every push and pull request to `main` triggers the CI workflow at `.github/workflows/build.yml`, which builds the debug APK and uploads it as an artifact.
-
-## Pushing changes
-
-A convenience script is included:
-
-```bash
-python3 push.py "your optional commit message"
-```
-
-Set `GITHUB_PERSONAL_ACCESS_TOKEN` in your environment for authenticated HTTPS pushes:
-
-```bash
-export GITHUB_PERSONAL_ACCESS_TOKEN=ghp_xxxxxxxxxxxx
-python3 push.py
-```
-
-The token is never printed or stored.
-
-## Privacy
-
-PrivacyShield is fully offline. It does not make any network requests, does not collect analytics, and does not transmit any data.
-
-## License
-
-MIT
+## 📄 Licencia
+MIT — Ver archivo [LICENSE](LICENSE) para más detalles.

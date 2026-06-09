@@ -1,9 +1,21 @@
-# Add project specific ProGuard rules here.
-# You can control the set of applied configuration files using the
-# proguardFiles setting in build.gradle.kts.
+# PrivacyShield ProGuard Rules
 
-# Keep data model classes (used by DataStore)
+# Keep data models
 -keep class com.privacyshield.data.model.** { *; }
+
+# Keep ViewModels
+-keepclassmembers class * extends androidx.lifecycle.ViewModel {
+    public <init>(...);
+}
+
+# Keep Services and Receivers
+-keep class com.privacyshield.protection.** { *; }
+
+# DataStore
+-keep class androidx.datastore.** { *; }
+
+# Compose
+-keep class androidx.compose.** { *; }
 
 # Kotlin coroutines
 -keepnames class kotlinx.coroutines.internal.MainDispatcherFactory {}

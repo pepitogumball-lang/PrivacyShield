@@ -104,8 +104,46 @@ fun HomeScreen(viewModel: AppViewModel = viewModel()) {
             contentPadding = PaddingValues(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
+            item { ProtectionStatusCard() }
             item { ScanStatusBar(state = state, onScanClick = viewModel::scanApps) }
             item { DashboardGrid(state = state) }
+        }
+    }
+}
+
+@Composable
+private fun ProtectionStatusCard() {
+    // Nota: Aquí se podría observar el estado real del servicio
+    Card(
+        colors = CardDefaults.cardColors(containerColor = SurfaceDark),
+        border = androidx.compose.foundation.BorderStroke(0.5.dp, OutlineDark),
+        shape = RoundedCornerShape(12.dp),
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Row(
+            modifier = Modifier.padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Default.Shield,
+                contentDescription = null,
+                tint = CyanAccent,
+                modifier = Modifier.size(24.dp)
+            )
+            Column {
+                Text(
+                    text = "Live Protection",
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                )
+                Text(
+                    text = "Active and monitoring for capture risks",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = TextSecondary
+                )
+            }
         }
     }
 }

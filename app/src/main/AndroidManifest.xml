@@ -48,7 +48,6 @@
 
         <!-- Background privacy watch service -->
         <service
-            android:name=".service.PrivacyWatchService"
             android:foregroundServiceType="dataSync"
             android:exported="false" />
         <service

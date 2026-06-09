@@ -191,7 +191,7 @@ androidx.core.content.ContextCompat.startForegroundService(applicationContext, r
         return NotificationCompat.Builder(this, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle("PrivacyShield protection active")
-            .setContentText("FG:${dbg.foregroundPackage} REC:${dbg.recordingRisk} OVL:${dbg.overlayActive} ${dbg.reason}")
+            .setContentText(if (dbg.overlayActive) "Protección activa: Bloqueando captura de pantalla" else "Monitoreando riesgos de privacidad en segundo plano")
             .setContentIntent(openIntent)
             .addAction(R.drawable.ic_notification, "Stop", stopIntent)
             .setOngoing(true)
