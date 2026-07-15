@@ -34,7 +34,7 @@ object RiskCalculator {
             score >= 4 -> RiskLevel.HIGH
             score >= 2 -> RiskLevel.MEDIUM
             score > 0 -> RiskLevel.LOW
-            else -> RiskLevel.NONE
+            else -> RiskLevel.LOW
         }
     }
 }

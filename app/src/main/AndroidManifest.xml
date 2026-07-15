@@ -14,15 +14,13 @@
     <!-- Post notifications (Android 13+ — requested at runtime) -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
-    <!-- Internet — required for local-network TV control over TLS sockets -->
-    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Overlay permission — required for the black privacy overlay window -->
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+
+    <!-- Usage stats — required to detect foreground app when Accessibility is unavailable -->
     <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" tools:ignore="ProtectedPermissions" />
 
-    <!-- Wi-Fi state check + mDNS multicast lock for Android TV discovery -->
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
+    <!-- Boot completed — restart protection service after device reboot -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
@@ -47,9 +45,6 @@
         </activity>
 
         <!-- Background privacy watch service -->
-        <service
-            android:foregroundServiceType="dataSync"
-            android:exported="false" />
         <service
             android:name=".protection.ProtectionOrchestratorService"
             android:foregroundServiceType="dataSync"

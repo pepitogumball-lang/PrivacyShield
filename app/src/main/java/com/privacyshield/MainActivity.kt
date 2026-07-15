@@ -62,7 +62,6 @@ private val bottomNavItems = listOf(
 )
 
 class MainActivity : ComponentActivity() {
-
     private val notificationPermLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { /* granted is handled silently */ }
@@ -70,13 +69,11 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-
         if (PermissionManager.needsNotificationPermission() &&
             !PermissionManager.isNotificationPermissionGranted(this)
         ) {
             notificationPermLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
         }
-
         setContent {
             PrivacyShieldTheme {
                 PrivacyShieldApp()
@@ -106,7 +103,7 @@ private fun PrivacyShieldApp() {
                         selected = selected,
                         onClick = {
                             navController.navigate(screen.route) {
-                                popTo(navController.graph.findStartDestination().id) {
+                                popUpTo(navController.graph.findStartDestination().id) {
                                     saveState = true
                                 }
                                 launchSingleTop = true
