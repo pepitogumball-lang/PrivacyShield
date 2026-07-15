@@ -41,7 +41,7 @@ jobs:
 
       # ── 5. Validate Gradle wrapper ────────────────────────────────────────
       - name: Validate Gradle wrapper
-        uses: gradle/actions/wrapper-validation@v3
+        uses: gradle/actions/wrapper-validation@v4
 
       # ── 6. Lint ───────────────────────────────────────────────────────────
       - name: Run Lint
