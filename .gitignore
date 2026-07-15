@@ -14,7 +14,7 @@ captures/
 *.dex
 
 ### Gradle ###
-gradle-wrapper.jar
+# Note: gradle-wrapper.jar is intentionally tracked (required for CI wrapper validation)
 .gradle
 **/build/
 !src/**/build/
